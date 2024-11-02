@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamlining Audio File Renaming with Python: A Practical Guide</title>
+    <!-- Add Prism CSS and Theme -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color-dark: #212121;
+            --text-color-dark: #dcdcdc;
+            --bg-color-light: #f9f9f9;
+            --text-color-light: #333;
+            --highlight-color: #ffa500;
+            --icon-color-light: #666;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1100px;
+            margin: 20px auto;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+        header {
+            background-color: var(--bg-color-light);
+            text-align: center;
+            padding: 20px;
+            height: auto;
+            position: relative;
+            margin: 0 auto;
+            width: 100%;
+        }
+        header img {
+            height: 50px;
+            display: block;
+            margin: 0 auto;
+            transition: filter 0.3s ease;
+        }
+        header img:hover {
+            filter: brightness(1.5);
+        }
+        .header-button {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+            transition: color 0.3s ease;
+        }
+        .header-button:hover {
+            color: #777;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 50px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: var(--text-color-light);
+        }
+        .divider {
+            width: 90%;
+            margin: 0 auto;
+            border-top: 1px solid #777;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        pre {
+            border-radius: 6px;
+            padding: 1em;
+            margin: 1em 0;
+            overflow: auto;
+            background-color: #f0f0f0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
+            color: grey;
+        }
+        a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #ffcc00;
+            text-decoration: underline;
+        }
+        a:visited {
+            color: #ff8c00;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .copy-button {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .copy-button:hover {
+            color: #777;
+        }
+        .blog-content {
+            margin: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                font-size: 14px;
+            }
+
+            header {
+                padding: 10px;
+            }
+
+            .header-button {
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Section -->
+<header>
+    <img id="logo" src="https://raw.githubusercontent.com/frankiefaruk/logo/refs/heads/main/frank_faruk_logo_grey.svg" alt="Frank Faruk Logo">
+    <button class="header-button" onclick="window.location.href='https://frankfaruksampling.site'">FRANK FARUK SAMPLING</button>
+    <hr class="divider">
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <img id="theme-icon" src="https://img.icons8.com/ios-glyphs/30/000000/sun--v1.png" alt="Light Mode Icon" style="width: 20px; height: 20px; vertical-align: middle;">
+    </button>
+</header>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="https://raw.githubusercontent.com/frankiefaruk/Python-Audio-File-Renamer/refs/heads/main/note_mapping.csv" target="_blank">
+            <img src="https://img.icons8.com/ios-filled/50/666666/file.png" alt="Note Mapping CSV File Icon" style="width: 24px; height: 24px; vertical-align: middle;" class="theme-icon-compatible">
+        </a>
+        <a href="https://raw.githubusercontent.com/frankiefaruk/Python-Audio-File-Renamer/refs/heads/main/audio_files_renamer.py" target="_blank">
+            <img src="https://img.icons8.com/ios-filled/50/666666/python.png" alt="Audio Files Renamer.py Icon" style="width: 24px; height: 24px; vertical-align: middle;" class="theme-icon-compatible">
+        </a>
+    </div>
+    <h1>Streamlining Audio File Renaming with Python: A Practical Guide</h1>
+    <p>In audio production, especially for projects involving sample libraries or virtual instruments, organizing and renaming files can be tedious and error-prone. Today, we’ll walk through a Python script that automates this task by renaming a batch of audio files in a structured format based on MIDI note mappings. This script allows you to save time, maintain consistency, and focus on the creative side of production rather than repetitive file management.</p>
+    <h2>Overview of the Script</h2>
+    <p>Our script is designed to rename audio files in bulk, using a MIDI note mapping in a CSV file. Here’s how it works:</p>
+    <ul>
+        <li><strong>Directory Selection:</strong> The user is prompted to choose the directory containing the audio files.</li>
+        <li><strong>Audio File Listing:</strong> The script finds all .wav files in the directory and orders them by extracting any numbers in their names.</li>
+        <li><strong>User-Defined Format:</strong> It then requests a sample naming format, such as “A#2, Guitar, Tremolo, RR1.”</li>
+        <li><strong>Mapping Creation:</strong> Using a note_mapping.csv file (located in the same directory), the script maps MIDI numbers to note names.</li>
+        <li><strong>File Renaming:</strong> Finally, it sequentially renames files based on the user-defined starting note, ensuring a consistent format.</li>
+    </ul>
+    <h2>Step-by-Step Guide</h2>
+    <h3>1. Selecting the Audio Files Directory</h3>
+    <p>The script starts by prompting you to select the directory containing your .wav audio files. This is done through a graphical file picker, making it user-friendly and intuitive:</p>
+    <pre><code class="language-python">directory = get_audio_directory()</code></pre>
+    <h3>2. Listing and Sorting Audio Files</h3>
+    <p>Once the directory is selected, the script searches for .wav files within it. It includes a robust sorting method, which ensures files are ordered logically by any numeric values in the filenames—a useful feature for keeping track of numbered files like “01-Kick.wav” and “02-Snare.wav.”</p>
+    <pre><code class="language-python">audio_files = list_audio_files(directory)</code></pre>
+    <h3>3. Getting User Input for the New File Format</h3>
+    <p>The script then prompts you to input a desired naming format, such as “A#2, Guitar, Tremolo, RR1.” The format is flexible, allowing you to customize names while ensuring consistency across all files.</p>
+    <pre><code class="language-python">user_format = get_user_format()</code></pre>
+    <h3>4. Loading the MIDI Note Mapping from CSV</h3>
+    <p>To make sure each file is labeled with the correct MIDI note, the script reads a note_mapping.csv file located in the audio files directory. This file contains mappings of MIDI note numbers to note names, helping the script understand that, for example, MIDI number 60 corresponds to “C4.”</p>
+    <pre><code class="language-python">mapping, reverse_mapping = create_note_mapping(csv_path)</code></pre>
+    <h3>5. Renaming Files Sequentially Based on MIDI Notes</h3>
+    <p>Using the mappings from the CSV, the script starts renaming each audio file from the specified note. Each file receives a name based on the MIDI note number, instrument, articulation, and round-robin number. The renaming format in this example would look like: 60-Guitar_C4-Tremolo_RR1.wav.</p>
+    <pre><code class="language-python">rename_audio_files(directory, audio_files, start_note, mapping, reverse_mapping)</code></pre>
+    <h2>Key Features of the Script</h2>
+    <ul>
+        <li><strong>Error Handling:</strong> The script checks for common errors, such as missing files or invalid inputs, and provides clear feedback to the user.</li>
+        <li><strong>Flexible Naming:</strong> Customizable naming conventions allow users to define formats, making the script versatile for different naming requirements.</li>
+        <li><strong>Sequential Renaming:</strong> By incrementing MIDI notes for each file, the script simplifies the otherwise complex task of manual renaming, ensuring logical, orderly naming.</li>
+    </ul>
+    <h2>Example Usage</h2>
+    <p>Imagine you have a directory filled with unsorted audio samples. By running this script, you can:</p>
+    <ul>
+        <li>Select your directory of .wav files.</li>
+        <li>Input a sample naming format.</li>
+        <li>Let the script handle renaming each file according to your chosen convention, following a MIDI-based sequence.</li>
+    </ul>
+    <p>This tool can significantly speed up your workflow, making it a perfect solution for audio producers working with large libraries. Whether you're building a sample pack or organizing instrument files, this script ensures your files are consistently named and easy to locate.</p>
+    <h2>Closing Thoughts</h2>
+    <p>Organizing audio files doesn’t have to be a painstaking chore. With this Python script, you can automate the renaming process, leaving you free to focus on the creative aspects of your project. And because it uses Python’s standard library, it's simple to set up and customize.</p>
+    <p>Ready to streamline your audio file management? Give the script a try, and enjoy a faster, more organized workflow!</p>
+</div>
+
+<!-- Footer Section -->
+<hr class="divider">
+<footer style="text-align: center; margin: 20px 0; color: var(--text-color-light); font-size: 14px;">
+    Design by ChatGPT / Claude.ai / Gemini and <a href="https://frankfaruksampling.site" target="_blank">Frank Faruk Sampling</a> 
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script>
+    function copyToClipboard(selector) {
+        const codeBlock = document.querySelector(selector);
+        const textArea = document.createElement('textarea');
+        textArea.value = codeBlock.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            alert('Code copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy text', err);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function toggleTheme() {
+        const root = document.documentElement;
+        const themeToggle = document.querySelector('.theme-toggle');
+        const logo = document.getElementById('logo');
+        const themeIcon = document.getElementById('theme-icon');
+        const isLightMode = getComputedStyle(root).getPropertyValue('--bg-color-light').trim() === '#f9f9f9';
+
+        if (isLightMode) {
+            root.style.setProperty('--bg-color-light', '#212121');
+            root.style.setProperty('--text-color-light', '#dcdcdc');
+            themeIcon.src = 'https://img.icons8.com/ios-glyphs/30/dcdcdc/moon-symbol.png';
+            themeIcon.alt = 'Dark Mode Icon';
+            logo.src = 'https://raw.githubusercontent.com/frankiefaruk/logo/refs/heads/main/frank_faruk_logo_white.svg';
+            document.querySelectorAll('.theme-icon-compatible').forEach(icon => {
+                icon.src = icon.src.replace('/666666/', '/dcdcdc/');
+            });
+        } else {
+            root.style.setProperty('--bg-color-light', '#f9f9f9');
+            root.style.setProperty('--text-color-light', '#333');
+            themeIcon.src = 'https://img.icons8.com/ios-glyphs/30/000000/sun--v1.png';
+            themeIcon.alt = 'Light Mode Icon';
+            logo.src = 'https://raw.githubusercontent.com/frankiefaruk/logo/refs/heads/main/frank_faruk_logo_grey.svg';
+            document.querySelectorAll('.theme-icon-compatible').forEach(icon => {
+                icon.src = icon.src.replace('/dcdcdc/', '/666666/');
+            });
+        }
+    }
+</script>
+</body>
+</html>
